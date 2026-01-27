@@ -1,0 +1,9 @@
+pillow
+numpy
+matplotlib
+scikit-image
+scikit-learn
+scipy
+pandas
+seaborn
+statsmodels
