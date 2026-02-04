@@ -21,14 +21,13 @@ The **field of view is also much smaller** than the experimental Petri dish (cel
 
 ## Solutions
 
-Proposed by Dr. Rappel, we have the following solutions
+Proposed by Dr. Rappel, we have the following solutions:
 
 **1. Analyze a window/subset of the TIFF movie for a proof of concept**
 - Even if it is for a few seconds, model the movement of the cells between the bands before the cells begin to disappear.
 - Select a subset or a window of the TIFF movie;
 
-![Image cannot load.](assets/img/bottom_left_subset.png)
-**Example window chosen at frame 705.**
+![Image cannot load.](assets/img/bottom_left_subset.png "Example window chosen at frame 705 in bottom-right corner")
 
 **2. Persist the tracking of cells during disappearance if they have not moved too far**
 - Keep tracking the cells' location when they have disappeared, freezing the tracker's position of the cell before it disappears, and continue tracking after it reappears.
