@@ -1,59 +1,117 @@
-'''
-This script is used to preprocess the TIFF movie by extracting a window of the movie.
-'''
+"""
+Preprocess a multi-frame TIFF movie by extracting a temporal + spatial window.
+
+Expected TIFF shapes:
+- (T, Y, X)
+- (T, C, Y, X)
+"""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+from typing import Tuple
 
 import tifffile as tif
-import numpy as np
-import cv2
-import os
-import sys
-import argparse
 
-def extract_window(tiff_file, output_file, start_frame=10, end_frame=20, start_row=100, start_col=150, end_row=300, end_col=350):
-    '''
-    Extract a window of the TIFF movie using tifffile and numpy.
-    '''
-    stack = tif.imread(tiff_file) # Returns a numpy array (T, Y, X) or (T, C, Y, X)
+def _validate_window(
+    stack_shape: Tuple[int, ...],
+    start_frame: int,
+    end_frame: int,
+    start_row: int,
+    end_row: int,
+    start_col: int,
+    end_col: int,
+) -> None:
+    if len(stack_shape) not in (3, 4):
+        raise ValueError(
+            f"Expected stack shape (T,Y,X) or (T,C,Y,X); got shape={stack_shape}"
+        )
 
-    # Subset 1: Specific frames (temporal subset)
-    frames_subset = stack[start_frame:end_frame, :, :]
+    t = stack_shape[0]
+    y = stack_shape[-2]
+    x = stack_shape[-1]
 
-    # Subset 2: Spatial window (spatial subset)
-    spatial_subset = stack[:, start_row:end_row, start_col:end_col]
+    if not (0 <= start_frame < end_frame <= t):
+        raise ValueError(f"Invalid frame window: [{start_frame}, {end_frame}) for T={t}")
+    if not (0 <= start_row < end_row <= y):
+        raise ValueError(f"Invalid row window: [{start_row}, {end_row}) for Y={y}")
+    if not (0 <= start_col < end_col <= x):
+        raise ValueError(f"Invalid col window: [{start_col}, {end_col}) for X={x}")
 
-    # Subset 3: Combined
-    combined_subset = stack[10:21, 100:300, 150:350]
 
-    # Save the subset to a new file
-    tif.imwrite(output_file, combined_subset)
+def extract_window(
+    tiff_file: str | Path,
+    output_file: str | Path,
+    *,
+    start_frame: int = 10,
+    end_frame: int = 20,
+    start_row: int = 100,
+    end_row: int = 300,
+    start_col: int = 150,
+    end_col: int = 350,
+    use_memmap: bool = True,
+) -> Path:
+    """
+    Extract a combined temporal + spatial subset and save it as a new TIFF stack.
+    """
+    tiff_file = Path(tiff_file)
+    output_file = Path(output_file)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
 
-def extract_window_memory_map(tiff_file, output_file, start_frame=10, end_frame=20, start_row=100, start_col=150, end_row=300, end_col=350):
-    '''
-    Extract a window of the TIFF movie using memory map.
-    '''
-    stack = tif.memmap(tiff_file) # Returns a numpy array (T, Y, X) or (T, C, Y, X)
+    stack = tif.memmap(tiff_file) if use_memmap else tif.imread(tiff_file)
+    _validate_window(
+        stack.shape, start_frame, end_frame, start_row, end_row, start_col, end_col
+    )
 
-    # Subset 1: Specific frames (temporal subset)
-    frames_subset = stack[start_frame:end_frame, :, :]
+    if stack.ndim == 3:
+        # (T, Y, X)
+        subset = stack[start_frame:end_frame, start_row:end_row, start_col:end_col]
+    else:
+        # (T, C, Y, X)
+        subset = stack[start_frame:end_frame, :, start_row:end_row, start_col:end_col]
 
-    # Subset 2: Spatial window (spatial subset)
-    spatial_subset = stack[:, start_row:end_row, start_col:end_col]
+    tif.imwrite(output_file, subset)
+    return output_file
 
-    # Subset 3: Combined
-    combined_subset = stack[start_frame:end_frame, start_row:end_row, start_col:end_col]
 
-    # Save the subset to a new file
-    tif.imwrite(output_file, combined_subset)
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description="Extract a temporal+spatial window from a multi-frame TIFF."
+    )
+    p.add_argument("--input", "-i", required=True, help="Path to input TIFF movie")
+    p.add_argument("--output", "-o", required=True, help="Path to output TIFF movie")
 
-def extract_window_2(tiff_file, output_file, start_frame=10, end_frame=20, start_row=100, start_col=150, end_row=300, end_col=350):
-    '''
-    Extract a window of the TIFF movie using cv2.
-    '''
-    ret, images = cv2.imreadmulti(tiff_file, flags=cv2.IMREAD_ANYCOLOR)
+    p.add_argument("--start-frame", type=int, default=10)
+    p.add_argument("--end-frame", type=int, default=20)
+    p.add_argument("--start-row", type=int, default=100)
+    p.add_argument("--end-row", type=int, default=300)
+    p.add_argument("--start-col", type=int, default=150)
+    p.add_argument("--end-col", type=int, default=350)
 
-    if ret:
-        # OpenCV convention: images[frame_idx][y:y+h, x:x+w]
-        cropped_frames = [img[start_row:end_row, start_col:end_col] for img in images[start_frame:end_frame]]
-        
-        # Save the cropped frames to a new file
-        cv2.imwrite(output_file, cropped_frames)
+    p.add_argument(
+        "--no-memmap",
+        action="store_true",
+        help="Disable memory mapping (loads full TIFF into RAM).",
+    )
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _build_parser().parse_args(argv)
+    extract_window(
+        args.input,
+        args.output,
+        start_frame=args.start_frame,
+        end_frame=args.end_frame,
+        start_row=args.start_row,
+        end_row=args.end_row,
+        start_col=args.start_col,
+        end_col=args.end_col,
+        use_memmap=not args.no_memmap,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -38,3 +38,19 @@ Many of these algorithms include hyperparameters (i.e., radius, persistence, thr
 
 Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLOby Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames).
 
+## Run
+
+### preprocessor/window.py 
+```bash
+python -m preprocessor.window \
+  --input path/to/movie.tif \
+  --output path/to/window.tif \
+  --start-frame 10 --end-frame 20 \
+  --start-row 100 --end-row 300 \
+  --start-col 150 --end-col 350
+```
+
+or force full load into RAM:
+```bash
+python -m preprocessor.window --input in.tif --output out.tif --no-memmap
+```

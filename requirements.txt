@@ -10,5 +10,4 @@ pandas
 seaborn
 statsmodels
 opencv-python
-cv2
 ultralytics
