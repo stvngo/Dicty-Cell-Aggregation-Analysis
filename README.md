@@ -36,3 +36,5 @@ A variety of tracking algorithms are available under ImageJ/Fiji. We are most in
 
 Many of these algorithms include hyperparameters (i.e., radius, persistence, thresholds, pixels), that must be tuned to accurately capture frame-by-frame movement of cells.
 
+Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLOby Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames).
+
