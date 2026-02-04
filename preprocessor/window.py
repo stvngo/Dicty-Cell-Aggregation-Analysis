@@ -59,7 +59,8 @@ def extract_window(
     output_file = Path(output_file)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    stack = tif.memmap(tiff_file) if use_memmap else tif.imread(tiff_file)
+    # stack = tif.memmap(tiff_file) if use_memmap else tif.imread(tiff_file)
+    stack = tif.imread(tiff_file)
     _validate_window(
         stack.shape, start_frame, end_frame, start_row, end_row, start_col, end_col
     )
