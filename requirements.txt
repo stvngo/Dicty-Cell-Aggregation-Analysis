@@ -1,4 +1,6 @@
 pillow
+tifffile
+torch
 numpy
 matplotlib
 scikit-image
@@ -7,3 +9,6 @@ scipy
 pandas
 seaborn
 statsmodels
+opencv-python
+cv2
+ultralytics
