@@ -9,3 +9,5 @@ __pycache__/
 *.pyzw
 data/raw/
 *.pt
+*.mp4
+*.xml
