@@ -11,3 +11,5 @@ seaborn
 statsmodels
 opencv-python
 ultralytics
+ipykernel
+jupyter
