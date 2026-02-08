@@ -1,17 +1,18 @@
-# Amoeba (Dicty) Motility and Cell Aggregation Under Starvation
-Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at the **UCSD Department of Physics**.
+# Dictyostelium Motility and Cell Aggregation Under Starvation
+Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
-*Dictyostelium discoideum* is a social amoeba that, upon starvation, initiates a collective aggregation process to survive. Individual cells chemotax toward waves of cAMP, forming complex streaming patterns, mounds, and eventually a migrating multicellular slug. This process, regulated by **cAMP** signaling and cell adhesion, leads to the formation of a fruiting body. 
+## Introduction
+
+*Dictyostelium discoideum* is a social amoeba that, upon starvation, initiates a collective aggregation process to survive. Individual cells chemotax toward waves of cAMP, forming complex streaming patterns, mounds, and eventually a migrating multicellular slug. This process, regulated by **cAMP** signaling and cell adhesion, leads to the formation of a fruiting body.
 
 ## Idea
 
 - Process TIFF file(s) from lab via thresholding.
 - Each frame is 15 seconds.
-- There are thousands of tiny amoeba cells in movie, aggregating into 6 large cells by the end of the film.
+- There are thousands of amoeba cells in movie, aggregating into 6 large cells by the end of the film.
 - Use **ImageJ/Fiji's** built-in cell tracking algorithms (**TrackMate**) and libraries to model the position and velocity of a subset of these cells over time, particularly:
     - their movement *parallel/orthogonal to the Flamindo2 band*, and 
-    - their movement *relative to each other/cluster centers*.
-
+    - their movement *relative to each other*/cluster centers.
 
 ## Problems
 
@@ -118,7 +119,7 @@ A variety of tracking algorithms are available under ImageJ/Fiji's open-source T
 
 Many of these algorithms include hyperparameters (i.e., radius, persistence, thresholds, pixels), that must be tuned to accurately capture frame-by-frame movement of cells.
 
-Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLOby Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames) as well as post-training/fine-tuning on currently unavailable data.
+Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLO by Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames) as well as post-training/fine-tuning with currently inaccessible data.
 
 ## Run
 
