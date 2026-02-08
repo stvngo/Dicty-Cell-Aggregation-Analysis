@@ -86,6 +86,7 @@ The full process consists of five main steps:
    - Cells frequently disappear and reappear (visible in TrackScheme), requiring frame gap limits to maintain continuity
    
    ![Track scheme](assets/img/trial_3_trackscheme.png "TrackScheme visualization showing cell ID evolution")
+   ![Plot of N spots vs T.png]("assets/viz/trial_3/Plot of N spots vs T.png" "Spots vs T")
 
 3. **Temporal Tracking Patterns**:
    - Early-middle frames: constant splitting/merging, unclear cluster identities (long horizontal curve in TrackScheme shows many cell IDs being created)
