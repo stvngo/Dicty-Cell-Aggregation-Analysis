@@ -101,7 +101,9 @@ The full process consists of five main steps:
 
 Tracking results show promising signs of cell response to waves (e.g., a long purple track moving toward upper right), though further analysis is needed to confirm wave-velocity relationships.
 
-![Zoomed view](assets/img/trial_3_zoomed.png "Zoomed view of tracked cells")
+<p align="center">
+  <img src="assets/img/trial_3_zoomed.png" alt="Zoomed view of tracked cells" width="70%"/>
+</p>
 
 **Output Data**: Tracking results (spots, tracks, edges, branches CSV files) are available in [`results/trial_3/`](results/trial_3).
 
