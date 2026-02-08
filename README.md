@@ -115,13 +115,15 @@ Tracking results show promising signs of cell response to waves (e.g., a long pu
 
 ## Particle/Cell Tracking Algorithms
 
-A variety of tracking algorithms are available under ImageJ/Fiji. We are most interested in those that can detect and handle **merging and splitting events**, since our Dicty cells aggregate over time. The algorithms used to capture smaller cells merging into a larger cell can be found [here](docs/trackers)
+A variety of tracking algorithms are available under ImageJ/Fiji's open-source TrackMate library. We are most interested in those that can detect and handle **merging and splitting events**, since our Dicty cells aggregate over time in a hierarchal fashion. The algorithms used to capture smaller cells merging to form larger cells can be found [here](docs/trackers)
 
 Many of these algorithms include hyperparameters (i.e., radius, persistence, thresholds, pixels), that must be tuned to accurately capture frame-by-frame movement of cells.
 
 Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLO by Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames) as well as post-training/fine-tuning with currently inaccessible data.
 
 ## Run
+
+For image preprocessing utilities, use the following commands:
 
 ### preprocessor/window.py 
 ```bash
