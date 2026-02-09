@@ -51,7 +51,7 @@ The full process consists of five main steps:
 
 3. **Cell Detection via Thresholding**:
    - Use thresholding detector with simplified contours to detect each cell (intensity threshold: 17604)
-   - Filter out groups with radius < 8 pixels to focus on larger clusters
+   - Filter groups with radius >= 8.04 pixels to focus on larger clusters
    - This reduces tracking issues from small clusters that frequently disappear and reappear
    
    <p align="center">
@@ -62,10 +62,16 @@ The full process consists of five main steps:
 4. **Advanced Kalman Tracker (AKT)**:
    - Hyperparameters tuned for merging/splitting events:
      - Merging distance: 5
+      - Penalties: None
      - Splitting distance: 5
-     - Kalman search radius: 30
-     - Linking max distance: 30
-     - Max frame gap: 3
+      - Penalties: None
+     - Initial search radius: 30 pixels (needs conversion to nanometers)
+     - Kalman search radius: 10 pixels (needs conversion to nanometers)
+       - Quality: 1
+    - Linking max distance: 30
+     - Max frame gap: 5 frames
+     - Number of merge events kept: 371 (All)
+     - Color tracks by: Track Index
    - Improved tracking stability: contours disappear less frequently, reducing "jumpy" tracks (straight lines jumping across frames)
    
    ![Cell tracks](assets/img/trial_3_cell_tracks.png "Cell tracking trajectories")
