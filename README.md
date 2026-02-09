@@ -24,7 +24,7 @@ The **field of view is also much smaller** than the experimental Petri dish (cel
 
 ## Possible Solutions
 
-Proposed by Dr. Rappel, we have the following solutions:
+We have the following solutions:
 
 **1. Analyze a window/subset of the TIFF movie for a proof of concept**
 - Even if it is for a few seconds, model the movement of the cells between the bands before the cells begin to disappear.
@@ -35,7 +35,7 @@ Proposed by Dr. Rappel, we have the following solutions:
 **2. Persist the tracking of cells during disappearance if they have not moved too far**
 - Keep tracking the cells' location when they have disappeared, freezing the tracker's position of the cell before it disappears, and continue tracking after it reappears.
 
-# Overview (as of 02/07/2026)
+# Overview (as of 02/09/2026)
 
 Using the C1 movie (without waves), we have developed a preprocessing and tracking pipeline that produces improved tracking results by reducing noise and focusing on larger cell clusters.
 
@@ -48,6 +48,15 @@ The full process consists of five main steps:
 2. **Spatial and Temporal Windowing**: 
    - Select a spatial window from the stack
    - Filter frames to focus on aggregation periods (e.g., frames 1200-4000, where distinct clusters become clearer)
+
+**ROI Geometry** (ImageJ units):
+
+| Axis | Min | Max | Step (Δ) |
+|------|-----|-----|----------|
+| **X** | 154 | 397 | 1.00000 |
+| **Y** | 211 | 435 | 1.00000 |
+| **Z** | 0   | 0   | 1.00000 |
+| **T** | 0   | 2799| 1.00000 |
 
 3. **Cell Detection via Thresholding**:
    - Use thresholding detector with simplified contours to detect each cell (intensity threshold: 17604)
@@ -65,8 +74,8 @@ The full process consists of five main steps:
       - Penalties: None
      - Splitting distance: 5
       - Penalties: None
-     - Initial search radius: 30 pixels (needs conversion to nanometers)
-     - Kalman search radius: 10 pixels (needs conversion to nanometers)
+     - Initial search radius: 30 pixels (needs conversion to microns)
+     - Kalman search radius: 10 pixels (needs conversion to microns)
        - Quality: 1
     - Linking max distance: 30
      - Max frame gap: 5 frames
@@ -101,7 +110,7 @@ The full process consists of five main steps:
 
 4. **Limited Split/Merge Detection**:
    - Analysis of `results/trial_3/..branches.csv` shows almost no successors or predecessors detected for most cells
-   - Suggests that split/merge events may not be properly captured in the current implementation
+   - Suggests that split/merge events *may not* be properly captured in the current implementation
 
 ### Results
 
@@ -121,6 +130,7 @@ Tracking results show promising signs of cell response to waves (e.g., a long pu
 - Implement wave velocity calculation methodology
 - Improve split/merge event detection and tracking consistency
 
+> Further analysis can be found at [`analysis/edge-features.ipynb`](analysis/edge-features.ipynb)
 
 ## Particle/Cell Tracking Algorithms
 
@@ -130,11 +140,15 @@ Many of these algorithms include hyperparameters (i.e., radius, persistence, thr
 
 Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLO by Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames) as well as post-training/fine-tuning with currently inaccessible data.
 
+## Reproducibility
+
+> Note: although tracks can be fully reproduced with the above hyperparameters, the track colors and cell IDs will be different. The extracted data (e.g., position, time) should be the same.
+
 ## Run
 
 For image preprocessing utilities, use the following commands:
 
-### preprocessor/window.py 
+`preprocessor/window.py `
 ```bash
 python -m preprocessor.window \
   --input path/to/movie.tif \
@@ -148,3 +162,5 @@ or force full load into RAM:
 ```bash
 python -m preprocessor.window --input in.tif --output out.tif --no-memmap
 ```
+
+> Note that preprocessing subsets and ROIs via Python scripting will remove image settings, such as pixel width, pixel height, voxel depth, and time interval, setting all to 1 by default in TrackMate.
