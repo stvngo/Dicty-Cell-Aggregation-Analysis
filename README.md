@@ -1,6 +1,8 @@
 # Dictyostelium Motility and Cell Aggregation Dynamics
 Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
+![Cosine vs Time Surface](assets/img/cosine_vs_time_surface.gif)
+
 ## Introduction
 
 *Dictyostelium discoideum* is a social amoeba that, upon starvation, initiates a collective aggregation process to survive. Individual cells chemotax toward waves of cAMP, forming complex streaming patterns, mounds, and eventually a migrating multicellular slug. This process, regulated by **cAMP** signaling and cell adhesion, leads to the formation of a fruiting body.
