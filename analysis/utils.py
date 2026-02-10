@@ -239,3 +239,89 @@ def plot_interactive_3d_surface(merged):
     print(f"Time range: {time_vals.min():.1f} to {time_vals.max():.1f}")
     print(f"Cosine range: {cos_vals.min():.3f} to {cos_vals.max():.3f}")
     print(f"Max bin count: {H.max()} edges")
+
+
+def plot_mean_velocity_cosine_3d(track_mean_vel, merged):
+    """
+    3D distribution of track-level mean-velocity cosine vs mean EDGE_TIME vs track count.
+
+    This mirrors the earlier edge-level 3D distribution, but aggregates at the track level:
+    - X-axis: mean EDGE_TIME per track
+    - Y-axis: mean-velocity cosine per track (cos_mean_velocity)
+    - Z-axis: track count in each (time, cosine) bin
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+
+    # Ensure we have track-level mean-velocity cosine
+    cos_track = track_mean_vel["cos_mean_velocity"].dropna()
+    track_time_mean = merged.groupby("TRACK_ID")["EDGE_TIME"].mean().loc[cos_track.index]
+
+    # Create bins (time on x-axis, cosine on y-axis)
+    n_time_bins = 40
+    n_cos_bins = 40
+
+    time_vals = track_time_mean.values
+    cos_vals = cos_track.values
+
+    time_bins = np.linspace(time_vals.min(), time_vals.max(), n_time_bins + 1)
+    cos_bins = np.linspace(-1, 1, n_cos_bins + 1)
+
+    # 2D histogram over tracks
+    H, time_edges, cos_edges = np.histogram2d(time_vals, cos_vals, bins=[time_bins, cos_bins])
+
+    # Bin centers
+    time_centers = (time_edges[:-1] + time_edges[1:]) / 2
+    cos_centers = (cos_edges[:-1] + cos_edges[1:]) / 2
+
+    # Meshgrid for surface
+    Time_mesh, Cos_mesh = np.meshgrid(time_centers, cos_centers, indexing="ij")
+
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(111, projection="3d")
+
+    # Plot surface (tracks instead of edges)
+    surf = ax.plot_surface(
+        Time_mesh,
+        Cos_mesh,
+        H,
+        cmap="viridis",
+        alpha=0.85,
+        linewidth=0,
+        antialiased=True,
+    )
+
+    # Optional contour on base
+    ax.contour(
+        Time_mesh,
+        Cos_mesh,
+        H,
+        zdir="z",
+        offset=0,
+        cmap="viridis",
+        alpha=0.5,
+        linewidths=1,
+    )
+
+    ax.set_xlabel("Mean EDGE_TIME per track", fontsize=12, labelpad=10)
+    ax.set_ylabel("Mean-velocity cosine per track", fontsize=12, labelpad=10)
+    ax.set_zlabel("Track count", fontsize=12, labelpad=10)
+    ax.set_title(
+        "3D Distribution: Mean Time vs Mean-Velocity Cosine vs Track Count",
+        fontsize=14,
+        pad=20,
+    )
+
+    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=20, pad=0.1, label="Track count")
+
+    ax.view_init(elev=30, azim=45)
+    plt.tight_layout()
+    plt.show()
+
+    print("Track-level 3D distribution stats:")
+    print(f"Tracks used: {len(cos_track)}")
+    print(f"Mean-velocity cosine range: [{cos_vals.min():.3f}, {cos_vals.max():.3f}]")
+    print(f"Mean EDGE_TIME range: [{time_vals.min():.1f}, {time_vals.max():.1f}]")
+    print(f"Max bin count: {H.max()} (tracks)")
+    print(f"Bins with data: {np.sum(H > 0)} / {H.size}")
