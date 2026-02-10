@@ -1,7 +1,10 @@
 # Dictyostelium Motility and Cell Aggregation Dynamics
 Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
-![Cosine vs Time Surface](assets/img/cosine_vs_time_surface_long.gif)
+<p align="center">
+  <img src="assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" height="260"/>
+  <img src="assets/img/cosine_vs_time_surface_long.gif" alt="Cosine vs Time Surface" height="260"/>
+</p>
 
 ## Introduction
 
@@ -32,7 +35,12 @@ We have the following solutions:
 - Even if it is for a few seconds, model the movement of the cells between the bands before the cells begin to disappear.
 - Select a subset or a window of the TIFF movie;
 
-![Image cannot load.](assets/img/bottom_left_subset.png "Example window chosen at frame 705 in bottom-right corner")
+<p align="center">
+  <img src="assets/img/bottom_left_subset.png"
+       alt="Example window chosen at frame 705 in bottom-right corner"
+       title="Example window chosen at frame 705 in bottom-right corner"
+       width="60%"/>
+</p>
 
 **2. Persist the tracking of cells during disappearance if they have not moved too far**
 - Keep tracking the cells' location when they have disappeared, freezing the tracker's position of the cell before it disappears, and continue tracking after it reappears.
