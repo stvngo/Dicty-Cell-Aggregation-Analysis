@@ -1,7 +1,7 @@
 # Dictyostelium Motility and Cell Aggregation Dynamics
 Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
-![Cosine vs Time Surface](assets/img/cosine_vs_time_surface.gif)
+![Cosine vs Time Surface](assets/img/cosine_vs_time_surface_loop.gif)
 
 ## Introduction
 
