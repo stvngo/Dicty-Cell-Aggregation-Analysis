@@ -12,3 +12,5 @@ data/raw/
 *.mp4
 *.xml
 *.ipynb_checkpoints/
+.DS_Store
+*.tif
