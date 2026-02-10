@@ -2,9 +2,6 @@
 Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
 ![Cosine vs Time Surface](assets/img/cosine_vs_time_surface_long.gif)
-<p align="center">
-  <img src="assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories"/>/>
-</p>
 
 ## Introduction
 
@@ -72,9 +69,9 @@ The full process consists of five main steps:
    - Use thresholding detector with simplified contours to detect each cell (intensity threshold: 17604)
    - Filter groups with radius >= 8.04 pixels to focus on larger clusters
    - This reduces tracking issues from small clusters that frequently disappear and reappear
-   
+
    <p align="center">
-     <img src="assets/img/trial_3_detected_cells.png" alt="Detected cells with IDs" width="45%"/>
+     <img src="assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" width="45%"/>
      <img src="assets/img/trial_3_cell_ids.png" alt="Cell ID assignments" width="45%"/>
    </p>
 

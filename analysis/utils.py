@@ -325,3 +325,124 @@ def plot_mean_velocity_cosine_3d(track_mean_vel, merged):
     print(f"Mean EDGE_TIME range: [{time_vals.min():.1f}, {time_vals.max():.1f}]")
     print(f"Max bin count: {H.max()} (tracks)")
     print(f"Bins with data: {np.sum(H > 0)} / {H.size}")
+
+
+def plot_logistic_decision_surface_3d(best_model, X, y, feature_indices=(0, 1), grid_size=50):
+    """
+    Interactive 3D decision surface for a fitted sklearn Pipeline with a LogisticRegression
+    classifier, together with the underlying data, using Plotly.
+
+    Parameters
+    ----------
+    best_model : sklearn Pipeline
+        Pipeline with steps ['scaler', 'clf'], where 'clf' is LogisticRegression.
+    X : pandas.DataFrame or numpy.ndarray
+        Feature matrix used for fitting (in original feature space, *before* scaling).
+    y : array-like
+        Binary labels (0/1).
+    feature_indices : tuple of int, optional
+        Indices of the two features to visualize on the X/Y axes (default: (0, 1)).
+    grid_size : int, optional
+        Number of grid points per axis for the surface.
+    """
+    import numpy as np
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    # Ensure we have a notebook-friendly renderer
+    if pio.renderers.default == "auto":
+        pio.renderers.default = "notebook_connected"
+
+    # Ensure X is an array and keep column names if available
+    if hasattr(X, "values"):
+        X_array = X.values
+        feature_names = list(X.columns)
+    else:
+        X_array = np.asarray(X)
+        feature_names = [f"f{i}" for i in range(X_array.shape[1])]
+
+    f1_idx, f2_idx = feature_indices
+    f1_name = feature_names[f1_idx]
+    f2_name = feature_names[f2_idx]
+
+    # Extract scaler and classifier from pipeline
+    scaler = best_model.named_steps.get("scaler")
+    clf = best_model.named_steps.get("clf")
+
+    if clf is None or scaler is None:
+        raise ValueError("best_model must be a Pipeline with 'scaler' and 'clf' steps.")
+
+    # Build grid in original feature space
+    f1_vals = X_array[:, f1_idx]
+    f2_vals = X_array[:, f2_idx]
+
+    f1_min, f1_max = f1_vals.min(), f1_vals.max()
+    f2_min, f2_max = f2_vals.min(), f2_vals.max()
+
+    f1_grid = np.linspace(f1_min, f1_max, grid_size)
+    f2_grid = np.linspace(f2_min, f2_max, grid_size)
+    F1, F2 = np.meshgrid(f1_grid, f2_grid)
+
+    # For other features, hold them at their mean
+    X_mean = X_array.mean(axis=0)
+    grid_points = np.tile(X_mean, (grid_size * grid_size, 1))
+    grid_points[:, f1_idx] = F1.ravel()
+    grid_points[:, f2_idx] = F2.ravel()
+
+    # Apply scaler and predict probabilities (logistic surface)
+    grid_points_scaled = scaler.transform(grid_points)
+    proba = clf.predict_proba(grid_points_scaled)[:, 1]  # P(class=1)
+    Z = proba.reshape(F1.shape)
+
+    # Compute model probabilities for the actual data so points lie on the logistic surface
+    X_scaled = scaler.transform(X_array)
+    proba_data = clf.predict_proba(X_scaled)[:, 1]  # P(class = 1) for each track
+
+    # Scatter data colored by class, with z = model probability
+    y_arr = np.asarray(y)
+    class0_mask = y_arr == 0
+    class1_mask = y_arr == 1
+
+    scatter0 = go.Scatter3d(
+        x=X_array[class0_mask, f1_idx],
+        y=X_array[class0_mask, f2_idx],
+        z=proba_data[class0_mask],
+        mode="markers",
+        marker=dict(size=4, color="blue", opacity=0.7),
+        name="Class 0",
+    )
+
+    scatter1 = go.Scatter3d(
+        x=X_array[class1_mask, f1_idx],
+        y=X_array[class1_mask, f2_idx],
+        z=proba_data[class1_mask],
+        mode="markers",
+        marker=dict(size=4, color="orange", opacity=0.7),
+        name="Class 1",
+    )
+
+    # Logistic decision surface (smooth sigmoid shape in 3D)
+    surface = go.Surface(
+        x=F1,
+        y=F2,
+        z=Z,
+        colorscale="Viridis",
+        colorbar=dict(title="P(class = 1)"),
+        showscale=True,
+        opacity=0.9,
+    )
+
+    fig = go.Figure(data=[surface, scatter0, scatter1])
+
+    fig.update_layout(
+        title="Logistic Regression Decision Surface (Interactive 3D)",
+        scene=dict(
+            xaxis_title=f1_name,
+            yaxis_title=f2_name,
+            zaxis_title="P(class = 1)",
+        ),
+        width=900,
+        height=700,
+    )
+
+    fig.show()
