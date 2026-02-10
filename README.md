@@ -1,4 +1,4 @@
-# Dictyostelium Motility and Cell Aggregation Under Starvation
+# Dictyostelium Motility and Cell Aggregation Dynamics
 Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
 ## Introduction
@@ -12,7 +12,7 @@ Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* an
 - There are thousands of amoeba cells in movie, aggregating into 6 large cells by the end of the film.
 - Use **ImageJ/Fiji's** built-in cell tracking algorithms (**TrackMate**) and libraries to model the position and velocity of a subset of these cells over time, particularly:
     - their movement *parallel/orthogonal to the Flamindo2 band*, and 
-    - their movement *relative to each other*/cluster centers.
+    - their movement *relative to each other/cluster centers*.
 
 ## Problems
 
@@ -143,6 +143,44 @@ Other available methods have been used, e.g., using contour detection via Python
 ## Reproducibility
 
 > Note: although tracks can be fully reproduced with the above hyperparameters, the track colors and cell IDs will be different. The extracted data (e.g., position, time) should be the same.
+
+## Setup
+
+### **1. Create and activate a virtual environment**
+
+From the repository root:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # macOS / Linux
+# On Windows (PowerShell):
+# .\\venv\\Scripts\\Activate.ps1
+```
+
+### **2. Install Python dependencies**
+
+If a `requirements.txt` file is present:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+If not, the core analysis stack can be installed with:
+
+```bash
+pip install numpy pandas matplotlib seaborn scikit-learn jupyter
+```
+
+### **3. Launch Jupyter for analysis**
+
+From the repo root (with the virtual environment activated):
+
+```bash
+jupyter notebook
+```
+
+Then open `analysis/edge-features.ipynb` to reproduce the tracking and edge-feature analysis.
 
 ## Run
 

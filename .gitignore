@@ -11,3 +11,4 @@ data/raw/
 *.pt
 *.mp4
 *.xml
+*.ipynb_checkpoints/
