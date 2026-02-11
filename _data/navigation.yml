@@ -3,3 +3,12 @@
 
 - title: Home
   url: /
+
+- title: Processing Pipeline
+  url: /processing/
+
+- title: Data Analysis
+  url: /analysis/
+
+- title: Results
+  url: /results/
