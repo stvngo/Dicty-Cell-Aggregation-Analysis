@@ -23,12 +23,12 @@ plugins:
   - jekyll-remote-theme
   - jekyll-sitemap
 
-# Front matter defaults
+# Default navigation file
 defaults:
   - scope:
-      path: ""
+      path: "/"
     values:
-      layout: default                   # Use default.html layout by default for all files
+      navigation: "navigation"
 
 # Home page
 posts_on_home: 0
