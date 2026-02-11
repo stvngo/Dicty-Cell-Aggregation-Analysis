@@ -3,7 +3,7 @@ title: Dictyostelium Motility and Cell Aggregation Dynamics
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
 
 # Theme
-remote_theme: peterdesmet/petridish@3.1
+remote_theme: peterdesmet/petridish@3.0
 
 # Site settings
 url: "" # Leave empty for GitHub Pages
@@ -19,16 +19,16 @@ kramdown:
 # Plugins
 plugins:
   - jekyll-feed
-  # - jekyll-seo-tag
-  # - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-remote-theme
   - jekyll-sitemap
 
-# Default navigation file
+# Front matter defaults
 defaults:
   - scope:
-      path: "/"
+      path: ""
     values:
-      navigation: "navigation"
+      layout: default                   # Use default.html layout by default for all files
 
 # Home page
 posts_on_home: 0

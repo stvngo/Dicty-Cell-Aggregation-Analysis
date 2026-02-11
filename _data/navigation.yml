@@ -2,16 +2,16 @@
 # Add pages in the order you want them to appear in the top navigation
 
 - title: Home
-  href: /
+  url: /
 
 - title: Processing Pipeline
-  href: /processing/
+  url: /processing/
 
 - title: Data Analysis
-  href: /analysis/
+  url: /analysis/
 
 - title: Results
-  href: /results/
+  url: /results/
 
 - title: GitHub
-  href: https://github.com/stvngo/Dicty-Cell-Aggregation-Analysis
+  url: https://github.com/stvngo/Dicty-Cell-Aggregation-Analysis
