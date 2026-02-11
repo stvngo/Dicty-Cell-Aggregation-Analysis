@@ -10,8 +10,8 @@ permalink: /
 **Biophysics and Computer Vision Research Project** under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
 <p align="center">
-  <img src="assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" height="260"/>
-  <img src="assets/img/cosine_vs_time_surface_long.gif" alt="Cosine vs Time Surface" height="260"/>
+  <img src="/assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" height="260"/>
+  <img src="/assets/img/cosine_vs_time_surface_long.gif" alt="Cosine vs Time Surface" height="260"/>
 </p>
 
 ## Introduction
@@ -42,7 +42,7 @@ The **field of view is also much smaller** than the experimental Petri dish (cel
 - Select a subset or a window of the TIFF movie;
 
 <p align="center">
-  <img src="assets/img/bottom_left_subset.png"
+  <img src="/assets/img/bottom_left_subset.png"
        alt="Example window chosen at frame 705 in bottom-right corner"
        title="Example window chosen at frame 705 in bottom-right corner"
        width="60%"/>
@@ -234,7 +234,7 @@ Created 3D interactive Plotly visualizations of the logistic regression decision
 
 2. **Temporal Patterns**: Early frames show more extreme cosine values (both positive and negative), while later frames show more variability, consistent with aggregation dynamics.
 
-3. **Track-Level Stability**: Mean-velocity cosine per track shows a unimodal distribution, suggesting that while individual edges are noisy, tracks have consistent net migration directions.
+3. **Track-Level Stability**: Mean-velocity cosine per track shows a unimodal distribution, suggesting that while individual edges are noisy, tracks have more consistent net migration directions.
 
 4. **Centroid Convergence**: Radial cosine analysis reveals cells moving toward the slug centroid, with acceleration patterns suggesting distance-dependent forces.
 

@@ -1,8 +1,8 @@
-# Jekyll configuration for GitHub Pages with Petridish theme
+# Site settings
 title: Dictyostelium Motility and Cell Aggregation Dynamics
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
 
-# Theme - use remote_theme for GitHub Pages
+# Theme
 remote_theme: peterdesmet/petridish@3.1
 
 # Site settings
@@ -16,29 +16,29 @@ kramdown:
   input: GFM
   hard_wrap: false
 
-# GitHub Pages plugins
+# Plugins
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-remote-theme
 
-# Home page settings
-posts_on_home: 0 # Show 0 blog posts on homepage (no blog posts)
+# Home page
+posts_on_home: 0
 
-# Social links (appears in footer)
+# Social links
 social:
   github: svngo/Dicty-Cell-Aggregation-Analysis
 
-# Colors & font customization
+# Colors & font
 colors:
-  links: "#007bff"                      # Color for links
-  banner: "#007bff"                     # Background color for page banners
-  footer: "#6c757d"                     # Background color for footer
-font_serif: true                        # Font type: serif (default) or false for sans-serif
-rounded_corners: true                   # Enable rounded corners on boxes and buttons
+  links: "#007bff"
+  banner: "#007bff"
+  footer: "#6c757d"
+font_serif: true
+rounded_corners: true
 
-# Edit link in footer
-github_edit: true                       # Enable "edit this page" link
+# Edit link
+github_edit: true
 
 # Exclude from processing
 exclude:
@@ -51,7 +51,6 @@ exclude:
   - trackmate/
   - results/
   - analysis/.ipynb_checkpoints/
-  - Gemfile
   - Gemfile.lock
   - node_modules/
   - vendor/
