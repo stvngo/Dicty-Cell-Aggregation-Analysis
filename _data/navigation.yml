@@ -1,0 +1,5 @@
+# Navigation for Petridish theme
+# Add pages in the order you want them to appear in the top navigation
+
+- title: Home
+  url: /

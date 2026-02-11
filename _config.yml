@@ -1,9 +1,9 @@
-# Jekyll configuration for GitHub Pages
+# Jekyll configuration for GitHub Pages with Petridish theme
 title: Dictyostelium Motility and Cell Aggregation Dynamics
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
 
 # Theme - use remote_theme for GitHub Pages
-remote_theme: jekyll/minima
+remote_theme: peterdesmet/petridish@3.1
 
 # Site settings
 url: "" # Leave empty for GitHub Pages
@@ -16,16 +16,29 @@ kramdown:
   input: GFM
   hard_wrap: false
 
-# GitHub Pages automatically includes these plugins
+# GitHub Pages plugins
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-remote-theme
 
-# Minima theme settings
-minima:
-  social_links:
-    github: svngo
+# Home page settings
+posts_on_home: 0 # Show 0 blog posts on homepage (no blog posts)
+
+# Social links (appears in footer)
+social:
+  github: svngo/Dicty-Cell-Aggregation-Analysis
+
+# Colors & font customization
+colors:
+  links: "#007bff"                      # Color for links
+  banner: "#007bff"                     # Background color for page banners
+  footer: "#6c757d"                     # Background color for footer
+font_serif: true                        # Font type: serif (default) or false for sans-serif
+rounded_corners: true                   # Enable rounded corners on boxes and buttons
+
+# Edit link in footer
+github_edit: true                       # Enable "edit this page" link
 
 # Exclude from processing
 exclude:
