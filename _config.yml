@@ -12,9 +12,6 @@ baseurl: "/Dicty-Cell-Aggregation-Analysis" # Repository name for project site
 # Build settings
 markdown: kramdown
 highlighter: rouge
-kramdown:
-  input: GFM
-  hard_wrap: false
 
 # Plugins
 plugins:

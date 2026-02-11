@@ -4,6 +4,7 @@ title: Data Analysis
 description: Wave velocity analysis, centroid methodology, and exploratory data analysis
 permalink: /analysis/
 background: /assets/img/cell_tracking_1.png
+nav_exclude: true
 ---
 
 # Data Analysis Methodology

@@ -4,6 +4,7 @@ title: Results
 description: Key findings, limitations, and next steps
 permalink: /results/
 background: /assets/img/cell_tracking_1.png
+nav_exclude: true
 ---
 
 # Results and Findings
