@@ -3,7 +3,7 @@ layout: default
 title: Results
 description: Key findings, limitations, and next steps
 permalink: /results/
-background: /assets/img/cell_tracking_1.png
+background: /assets/img/pages/dicty.png
 ---
 
 # Results and Findings

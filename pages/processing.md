@@ -3,7 +3,7 @@ layout: default
 title: Processing Pipeline
 description: Preprocessing and tracking pipeline for cell detection and analysis
 permalink: /processing/
-background: /assets/img/cell_tracking_1.png
+background: /assets/img/pages/dicty.png
 ---
 
 # Processing Pipeline

@@ -3,7 +3,7 @@ layout: default
 title: Data Analysis
 description: Wave velocity analysis, centroid methodology, and exploratory data analysis
 permalink: /analysis/
-background: /assets/img/cell_tracking_1.png
+background: /assets/img/pages/dicty_2.png
 ---
 
 # Data Analysis Methodology
@@ -55,6 +55,12 @@ This decomposition allows us to distinguish between cells moving toward/away fro
   - Interactive Plotly surfaces for rotation and zoom
 - **3D Surface Plots**: Time vs cosine vs edge count, providing comprehensive views of alignment patterns
 
+<p align="center">
+  <img src="{{ '/assets/img/cosine_heatmap.png' | relative_url }}"
+       alt="Cosine alignment heatmap over time and tracks"
+       style="max-width: 100%; height: auto;"/>
+</p>
+
 ## Per-Track Mean-Velocity Cosine (Noise Reduction)
 
 To reduce noise from frame-to-frame velocity fluctuations, we developed a **track-level aggregation** approach:
@@ -71,7 +77,7 @@ This approach revealed a **unimodal distribution** (compared to the bimodal per-
 <p align="center">
   <img src="{{ '/assets/img/mean_time_vs_mean-velocity_cosine_vs_track_count.png' | relative_url }}"
        alt="Mean time vs mean-velocity cosine vs track count"
-       width="60%"/>
+       style="max-width: 100%; height: auto;"/>
 </p>
 
 ## Longest Track Analysis
@@ -85,9 +91,9 @@ We identified and visualized the longest track in the dataset:
 - **Speed Profile**: Magnitude of velocity over time
 
 <p align="center">
-  <img src="{{ '/assets/img/trial_3_zoomed.png' | relative_url }}"
-       alt="Longest track zoomed view"
-       width="60%"/>
+  <img src="{{ '/assets/img/track_186.png' | relative_url }}"
+       alt="Longest track analysis for track 186"
+       style="max-width: 100%; height: auto;"/>
 </p>
 
 This detailed single-track analysis provides insights into individual cell behavior and serves as a validation of our tracking and analysis pipeline.
@@ -127,7 +133,7 @@ Similar to wave alignment, we computed **radial cosine**:
 <p align="center">
   <img src="{{ '/assets/img/distance_to_centroid_vs_time.png' | relative_url }}"
        alt="Distance to centroid vs time"
-       width="60%"/>
+       style="max-width: 100%; height: auto;"/>
 </p>
 
 ## Radial Acceleration Analysis
@@ -150,7 +156,13 @@ This metric reveals whether cells are accelerating toward or away from the slug 
 - **Binned Analysis**: Mean acceleration by distance bins to identify force-distance relationships
 
 <p align="center">
+  <img src="{{ '/assets/img/radial_accel_vs_time.png' | relative_url }}"
+       alt="Radial acceleration vs time"
+       style="max-width: 100%; height: auto;"/>
+</p>
+
+<p align="center">
   <img src="{{ '/assets/img/time_vs_radial_cosine_vs_mean_radial_accel.png' | relative_url }}"
        alt="Time vs radial cosine vs mean radial acceleration"
-       width="60%"/>
+       style="max-width: 100%; height: auto;"/>
 </p>
