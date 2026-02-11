@@ -14,3 +14,10 @@ data/raw/
 *.ipynb_checkpoints/
 .DS_Store
 *.tif
+
+# Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock

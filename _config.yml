@@ -7,7 +7,7 @@ remote_theme: peterdesmet/petridish@3.1
 
 # Site settings
 url: "" # Leave empty for GitHub Pages
-baseurl: "" # Use "/repo-name" if your repo is not at username.github.io
+baseurl: "/Dicty-Cell-Aggregation-Analysis" # Repository name for project site
 
 # Build settings
 markdown: kramdown
