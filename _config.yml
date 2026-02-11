@@ -1,22 +1,31 @@
 # Jekyll configuration for GitHub Pages
 title: Dictyostelium Motility and Cell Aggregation Dynamics
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
-theme: minima
+
+# Theme - use remote_theme for GitHub Pages
+remote_theme: jekyll/minima
 
 # Site settings
 url: "" # Leave empty for GitHub Pages
-baseurl: "" # Leave empty if repository name is the site name
+baseurl: "" # Use "/repo-name" if your repo is not at username.github.io
 
 # Build settings
 markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# GitHub Pages automatically includes these plugins
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-remote-theme
 
 # Minima theme settings
 minima:
   social_links:
-    github: your-username # Update with your GitHub username
+    github: svngo
 
 # Exclude from processing
 exclude:
@@ -29,3 +38,7 @@ exclude:
   - trackmate/
   - results/
   - analysis/.ipynb_checkpoints/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
