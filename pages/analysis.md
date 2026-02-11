@@ -39,6 +39,12 @@ Decomposed cell velocities into components relative to the wave:
 
 This decomposition allows us to distinguish between cells moving toward/away from the wave origin versus those moving tangentially.
 
+<p align="center">
+  <img src="{{ '/assets/img/v_parallel_and_orthogonal.png' | relative_url }}"
+       alt="Distributions of V_parallel and V_orthogonal"
+       style="max-width: 100%; height: auto;"/>
+</p>
+
 ## Exploratory Data Analysis (EDA)
 
 ### 2D Visualizations
@@ -129,6 +135,12 @@ Similar to wave alignment, we computed **radial cosine**:
 - **2D Histograms**: Distance vs radial cosine, time vs radial cosine
 - **3D Surfaces**: Time vs radial cosine vs frequency, distance vs radial cosine vs frequency
 - **Spatial Trajectories**: Tracks colored by mean radial cosine, revealing convergence patterns
+
+<p align="center">
+  <img src="{{ '/assets/img/radial_velocity_dist.png' | relative_url }}"
+       alt="Distribution of radial velocity relative to slug centroid"
+       style="max-width: 100%; height: auto;"/>
+</p>
 
 <p align="center">
   <img src="{{ '/assets/img/distance_to_centroid_vs_time.png' | relative_url }}"
