@@ -1,8 +1,9 @@
 ---
 layout: default
-title: Results and Findings
+title: Results
 description: Key findings, limitations, and next steps
 permalink: /results/
+background: /assets/img/cell_tracking_1.png
 ---
 
 # Results and Findings

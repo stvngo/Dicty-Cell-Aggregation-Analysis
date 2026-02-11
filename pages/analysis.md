@@ -1,8 +1,9 @@
 ---
 layout: default
-title: Data Analysis Methodology
+title: Data Analysis
 description: Wave velocity analysis, centroid methodology, and exploratory data analysis
 permalink: /analysis/
+background: /assets/img/cell_tracking_1.png
 ---
 
 # Data Analysis Methodology
@@ -66,6 +67,12 @@ To reduce noise from frame-to-frame velocity fluctuations, we developed a **trac
   - Better suited for track-level classification and analysis
 
 This approach revealed a **unimodal distribution** (compared to the bimodal per-edge distribution), suggesting that while individual edges show high variability, tracks have more consistent net alignment patterns.
+
+<p align="center">
+  <img src="{{ '/assets/img/mean_time_vs_mean-velocity_cosine_vs_track_count.png' | relative_url }}"
+       alt="Mean time vs mean-velocity cosine vs track count"
+       width="60%"/>
+</p>
 
 ## Longest Track Analysis
 
@@ -145,11 +152,5 @@ This metric reveals whether cells are accelerating toward or away from the slug 
 <p align="center">
   <img src="{{ '/assets/img/time_vs_radial_cosine_vs_mean_radial_accel.png' | relative_url }}"
        alt="Time vs radial cosine vs mean radial acceleration"
-       width="60%"/>
-</p>
-
-<p align="center">
-  <img src="{{ '/assets/img/mean_time_vs_mean-velocity_cosine_vs_track_count.png' | relative_url }}"
-       alt="Mean time vs mean-velocity cosine vs track count"
        width="60%"/>
 </p>

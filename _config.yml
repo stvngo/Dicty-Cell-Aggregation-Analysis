@@ -42,7 +42,7 @@ font_serif: true
 rounded_corners: true
 
 # Logo
-logo: /assets/img/logo.png
+logo: /assets/img/pages/ucsd.png
 
 # Footer
 social:

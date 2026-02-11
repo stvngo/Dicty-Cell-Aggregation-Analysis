@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Dictyostelium Motility and Cell Aggregation Dynamics
+title: Overview
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
 permalink: /
 background: /assets/img/cell_tracking_1.png
