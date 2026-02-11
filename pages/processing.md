@@ -4,7 +4,6 @@ title: Processing Pipeline
 description: Preprocessing and tracking pipeline for cell detection and analysis
 permalink: /processing/
 background: /assets/img/cell_tracking_1.png
-nav_exclude: true
 ---
 
 # Processing Pipeline

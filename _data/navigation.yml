@@ -1,14 +1,17 @@
+# Navigation for Petridish theme
+# Add pages in the order you want them to appear in the top navigation
+
 - title: Home
-  url: /
+  href: /
 
 - title: Processing Pipeline
-  url: /processing/
+  href: /processing/
 
 - title: Data Analysis
-  url: /analysis/
+  href: /analysis/
 
 - title: Results
-  url: /results/
+  href: /results/
 
 - title: GitHub
-  url: https://github.com/stvngo/Dicty-Cell-Aggregation-Analysis
+  href: https://github.com/stvngo/Dicty-Cell-Aggregation-Analysis
