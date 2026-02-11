@@ -3,7 +3,7 @@ layout: home
 title: Dictyostelium Motility and Cell Aggregation Dynamics
 description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
 permalink: /
-background: /assets/img/background.png
+background: {{ site.baseurl }}/assets/img/trial_3_cell_tracks.png
 ---
 
 # Dictyostelium Motility and Cell Aggregation Dynamics
@@ -11,8 +11,8 @@ background: /assets/img/background.png
 **Biophysics and Computer Vision Research Project** under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
 <p align="center">
-  <img src="{{ '/assets/img/cell_tracking_1.gif' | relative_url }}" alt="Cell tracking trajectories" height="260"/>
-  <img src="{{ '/assets/img/cosine_vs_time_surface_long.gif' | relative_url }}" alt="Cosine vs Time Surface" height="260"/>
+  <img src="{{ site.baseurl }}/assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" height="260"/>
+  <img src="{{ site.baseurl }}/assets/img/cosine_vs_time_surface_long.gif" alt="Cosine vs Time Surface" height="260"/>
 </p>
 
 ## Introduction

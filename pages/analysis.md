@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Data Analysis Methodology
+description: Wave velocity analysis, centroid methodology, and exploratory data analysis
 permalink: /analysis/
 ---
 
@@ -77,7 +78,7 @@ We identified and visualized the longest track in the dataset:
 - **Speed Profile**: Magnitude of velocity over time
 
 <p align="center">
-  <img src="{{ '/assets/img/trial_3_zoomed.png' | relative_url }}"
+  <img src="{{ site.baseurl }}/assets/img/trial_3_zoomed.png"
        alt="Longest track zoomed view"
        width="60%"/>
 </p>
@@ -117,7 +118,7 @@ Similar to wave alignment, we computed **radial cosine**:
 - **Spatial Trajectories**: Tracks colored by mean radial cosine, revealing convergence patterns
 
 <p align="center">
-  <img src="{{ '/assets/img/distance_to_centroid_vs_time.png' | relative_url }}"
+  <img src="{{ site.baseurl }}/assets/img/distance_to_centroid_vs_time.png"
        alt="Distance to centroid vs time"
        width="60%"/>
 </p>
@@ -142,13 +143,13 @@ This metric reveals whether cells are accelerating toward or away from the slug 
 - **Binned Analysis**: Mean acceleration by distance bins to identify force-distance relationships
 
 <p align="center">
-  <img src="{{ '/assets/img/time_vs_radial_cosine_vs_mean_radial_accel.png' | relative_url }}"
+  <img src="{{ site.baseurl }}/assets/img/time_vs_radial_cosine_vs_mean_radial_accel.png"
        alt="Time vs radial cosine vs mean radial acceleration"
        width="60%"/>
 </p>
 
 <p align="center">
-  <img src="{{ '/assets/img/mean_time_vs_mean-velocity_cosine_vs_track_count.png' | relative_url }}"
+  <img src="{{ site.baseurl }}/assets/img/mean_time_vs_mean-velocity_cosine_vs_track_count.png"
        alt="Mean time vs mean-velocity cosine vs track count"
        width="60%"/>
 </p>

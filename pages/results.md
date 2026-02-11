@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Results and Findings
+description: Key findings, limitations, and next steps
 permalink: /results/
 ---
 
