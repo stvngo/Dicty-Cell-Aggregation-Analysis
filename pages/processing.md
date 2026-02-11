@@ -29,7 +29,7 @@ Select a spatial window from the stack and filter frames to focus on aggregation
 | **T** | 0   | 2799| 1.00000 |
 
 <p align="center">
-  <img src="{{ site.baseurl }}/assets/img/bottom_left_subset.png"
+  <img src="{{ '/assets/img/bottom_left_subset.png' | relative_url }}"
        alt="Example window chosen at frame 705 in bottom-right corner"
        title="Example window chosen at frame 705 in bottom-right corner"
        width="60%"/>
@@ -42,7 +42,7 @@ Select a spatial window from the stack and filter frames to focus on aggregation
 - This reduces tracking issues from small clusters that frequently disappear and reappear
 
 <p align="center">
-  <img src="{{ site.baseurl }}/assets/img/trial_3_cell_ids.png"
+  <img src="{{ '/assets/img/trial_3_cell_ids.png' | relative_url }}"
        alt="Detected cell IDs"
        width="60%"/>
 </p>
@@ -53,7 +53,7 @@ Select a spatial window from the stack and filter frames to focus on aggregation
 - Improved tracking stability: contours disappear less frequently, reducing "jumpy" tracks
 
 <p align="center">
-  <img src="{{ site.baseurl }}/assets/img/trial_3_trackscheme.png"
+  <img src="{{ '/assets/img/trial_3_trackscheme.png' | relative_url }}"
        alt="Track scheme visualization"
        width="60%"/>
 </p>
@@ -63,7 +63,7 @@ Select a spatial window from the stack and filter frames to focus on aggregation
 Generate tracking data including spots, tracks, edges, and branches (cell hierarchy) CSV files for further analysis.
 
 <p align="center">
-  <img src="{{ site.baseurl }}/assets/viz/trial_3/Plot_of_N_spots_vs_T.png"
+  <img src="{{ '/assets/viz/trial_3/Plot_of_N_spots_vs_T.png' | relative_url }}"
        alt="Number of spots vs time"
        width="60%"/>
 </p>
