@@ -7,10 +7,10 @@ import imageio.v2 as imageio
 import numpy as np
 import matplotlib.pyplot as plt
 
-def save_gif(fig, filename):
+def save_gif(fig, filename, frames=36, duration=0.12, loop=0):
     frames = []
     # Rotate camera around z-axis to create an animation (36 frames ~ one full turn)
-    for angle in np.linspace(0, 360, 36):
+    for angle in np.linspace(0, 360, frames):
         fig.update_layout(
             scene_camera=dict(
                 eye=dict(
@@ -25,7 +25,7 @@ def save_gif(fig, filename):
         frame = imageio.imread(img_bytes, format="png")
         frames.append(frame)
 
-    imageio.mimsave(f"assets/img/{filename}", frames, duration=0.12, loop=0)
+    imageio.mimsave(f"assets/img/{filename}", frames, duration=duration, loop=0)
     print(f"Saved GIF to assets/img/{filename}")
 
 # Helper function to create 3D distribution plots for any feature combination
@@ -446,3 +446,91 @@ def plot_logistic_decision_surface_3d(best_model, X, y, feature_indices=(0, 1), 
     )
 
     fig.show()
+
+
+def plot_interactive_acceleration_surface_3d(merged_sorted, n_time_bins=40, n_cos_bins=40):
+    """
+    Interactive 3D surface: Time vs Radial Cosine vs Mean Radial Acceleration.
+    
+    Uses Plotly for fully interactive rotation/zoom.
+    
+    Parameters
+    ----------
+    merged_sorted : pandas.DataFrame
+        DataFrame with columns: EDGE_TIME, radial_cosine, a_radial
+        Should be sorted by TRACK_ID and EDGE_TIME.
+    n_time_bins : int, optional
+        Number of bins for time axis. Default: 40
+    n_cos_bins : int, optional
+        Number of bins for radial cosine axis. Default: 40
+    """
+    import numpy as np
+    import plotly.graph_objects as go
+    import plotly.io as pio
+    
+    # Ensure notebook-friendly renderer
+    if pio.renderers.default == "auto":
+        pio.renderers.default = "notebook_connected"
+    
+    # Filter out NaN accelerations and radial cosine
+    acc_cos_data = merged_sorted[
+        merged_sorted['a_radial'].notna() & 
+        merged_sorted['radial_cosine'].notna()
+    ].copy()
+    
+    time_vals = acc_cos_data['EDGE_TIME'].values
+    cos_vals = acc_cos_data['radial_cosine'].values
+    acc_vals = acc_cos_data['a_radial'].values
+    
+    # Create bins
+    time_bins = np.linspace(time_vals.min(), time_vals.max(), n_time_bins + 1)
+    cos_bins = np.linspace(-1, 1, n_cos_bins + 1)
+    
+    # 2D histogram: time vs radial cosine
+    H, t_edges, c_edges = np.histogram2d(time_vals, cos_vals, bins=[time_bins, cos_bins])
+    
+    # Mean acceleration per bin
+    H_acc, _, _ = np.histogram2d(time_vals, cos_vals, bins=[time_bins, cos_bins], weights=acc_vals)
+    H_acc_mean = np.divide(H_acc, H, out=np.zeros_like(H_acc), where=H > 0)
+    
+    # Bin centers
+    t_centers = (t_edges[:-1] + t_edges[1:]) / 2
+    c_centers = (c_edges[:-1] + c_edges[1:]) / 2
+    T_mesh, C_mesh = np.meshgrid(t_centers, c_centers, indexing='ij')
+    
+    # Create interactive Plotly surface
+    fig = go.Figure(
+        data=[
+            go.Surface(
+                x=T_mesh,
+                y=C_mesh,
+                z=H_acc_mean,
+                colorscale='RdBu',
+                colorbar=dict(title='Mean Radial<br>Acceleration<br>(μm/s²)'),
+                showscale=True,
+                hovertemplate='Time: %{x:.1f}<br>Radial Cosine: %{y:.3f}<br>Mean Acc: %{z:.4f} μm/s²<extra></extra>',
+            )
+        ]
+    )
+    
+    fig.update_layout(
+        title='Interactive 3D Surface: Time vs Radial Cosine vs Mean Radial Acceleration',
+        scene=dict(
+            xaxis_title='EDGE_TIME',
+            yaxis_title='Radial Cosine',
+            zaxis_title='Mean Radial Acceleration (μm/s²)',
+            xaxis=dict(backgroundcolor='rgba(0,0,0,0)'),
+            yaxis=dict(backgroundcolor='rgba(0,0,0,0)'),
+            zaxis=dict(backgroundcolor='rgba(0,0,0,0)'),
+        ),
+        autosize=True,
+        width=900,
+        height=700,
+    )
+    
+    fig.show()
+    
+    print(f"Time range: {time_vals.min():.1f} to {time_vals.max():.1f}")
+    print(f"Radial cosine range: {cos_vals.min():.3f} to {cos_vals.max():.3f}")
+    print(f"Acceleration range: {acc_vals.min():.4f} to {acc_vals.max():.4f} μm/s²")
+    print(f"Mean acceleration per bin range: {H_acc_mean[H > 0].min():.4f} to {H_acc_mean[H > 0].max():.4f} μm/s²")
