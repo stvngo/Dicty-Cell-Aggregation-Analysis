@@ -1,0 +1,31 @@
+# Jekyll configuration for GitHub Pages
+title: Dictyostelium Motility and Cell Aggregation Dynamics
+description: Biophysics and Computer Vision Research Project - Cell Tracking and Velocity Analysis
+theme: minima
+
+# Site settings
+url: "" # Leave empty for GitHub Pages
+baseurl: "" # Leave empty if repository name is the site name
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Minima theme settings
+minima:
+  social_links:
+    github: your-username # Update with your GitHub username
+
+# Exclude from processing
+exclude:
+  - README.md
+  - venv/
+  - .git/
+  - .gitignore
+  - requirements.txt
+  - preprocessor/
+  - trackmate/
+  - results/
+  - analysis/.ipynb_checkpoints/

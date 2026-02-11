@@ -58,12 +58,16 @@ The full process consists of five main steps:
 
 **ROI Geometry** (ImageJ units):
 
+<p align="center">
+
 | Axis | Min | Max | Step (Δ) |
 |------|-----|-----|----------|
 | **X** | 154 | 397 | 1.00000 |
 | **Y** | 211 | 435 | 1.00000 |
 | **Z** | 0   | 0   | 1.00000 |
 | **T** | 0   | 2799| 1.00000 |
+
+</p>
 
 3. **Cell Detection via Thresholding**:
    - Use thresholding detector with simplified contours to detect each cell (intensity threshold: 17604)
