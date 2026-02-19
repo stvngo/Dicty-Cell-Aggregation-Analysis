@@ -1,11 +1,11 @@
 # Next Steps - Meeting Notes
 
-**Date**: [Date of meeting]  
-**Attendees**: [Your name], PhD Student
+**Date**: February 12, 2026
+**Attendees**: Steven, Yi-Chieh
 
 ## Overview
 
-Following discussion with the PhD student, we have identified several new research directions to enhance our understanding of cell aggregation dynamics and local cAMP signaling effects.
+Following our discussion, we have identified several new research directions to enhance our understanding of cell aggregation dynamics and local cAMP signaling effects.
 
 ---
 
@@ -22,6 +22,7 @@ Analyze how far cells move from their starting positions over time to distinguis
   - **Subdiffusion**: MSD ∝ t^α where α < 1
   - **Superdiffusion**: MSD ∝ t^α where α > 1
 - Compare MSD patterns across different time windows and cell clusters
+- Take the square root of MSD for same units
 
 ### Expected Insights
 - Determine if cells exhibit random walk behavior or directed migration toward aggregation sites
@@ -34,17 +35,19 @@ Analyze how far cells move from their starting positions over time to distinguis
 ### Problem Statement
 Current tree-like merging analysis doesn't capture **high-density regional effects**. We need to understand if high-density regions attract nearby cells.
 
+### Idea
+The idea is that even though we set a final coordinate for the large cluster, this alone doesn't answer the localized behavior of "neighboring" cell effects. Given *any* cell with a nonneglible cAMP concentration, do its immediate neighbors move towards or away from it?
+
 ### Research Questions
 - Given a high-density cell, do other cells move towards it?
 - How does local cell density affect the velocities of neighboring cells?
 - Is there a distance-dependent attraction effect?
 
 ### Methodology
-- Define "high-density regions" (e.g., cells with N neighbors within radius R)
-- For each high-density cell, compute velocities of nearby cells toward it
+- Define "high-density regions" (e.g., cells darkened when cross-referenced at the same time frame as the wave-present video are higher density, also defined by area since we cannot visualize the z-direction)
+- For each high-density cell, compute the velocities of nearby cells toward it
 - Compare attraction patterns for high-density vs low-density regions
 - Spatial analysis: distance from high-density region vs velocity magnitude/direction
-
 ---
 
 ## 3. Local cAMP Signaling Hypothesis
@@ -148,9 +151,13 @@ for bin_start in range(0, max_frame, bin_size):
 ### Density Calculation
 ```python
 # For each cell at each time point:
-# 1. Count neighbors within radius R
-# 2. Classify as high/low density
-# 3. Compute velocities of nearby cells toward this cell
+# 1. Count neighbors within radius R (take another subset within our ROI, focusing on smaller, localized clusters rather the final large one)
+# 2. Cross-check for cAMP concentrated or not (turned dark in the other video)
+# 3. Check if the cluster center is a higher density (defined by area) than its neighbors
+# 4. Classify as high/low density
+# 5. Compute the velocities of nearby cells toward this cell
+
+# This is the most challenging part, because we must identify the exact spot and edge IDs of the local center and the IDs of their neighbors
 ```
 
 ---
