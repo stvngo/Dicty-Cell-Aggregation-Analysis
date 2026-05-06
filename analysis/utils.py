@@ -47,8 +47,18 @@ def plot_3d_distribution(feature1_name, feature2_name, data_df,
     from mpl_toolkits.mplot3d import Axes3D
     from scipy.ndimage import gaussian_filter
     
-    feature1_data = data_df[feature1_name].values
-    feature2_data = data_df[feature2_name].values
+    feature1_data = np.asarray(data_df[feature1_name].values, dtype=float)
+    feature2_data = np.asarray(data_df[feature2_name].values, dtype=float)
+
+    # Remove NaN/inf pairs; otherwise histogram bins can become invalid/empty.
+    valid_mask = np.isfinite(feature1_data) & np.isfinite(feature2_data)
+    feature1_data = feature1_data[valid_mask]
+    feature2_data = feature2_data[valid_mask]
+
+    if feature1_data.size == 0 or feature2_data.size == 0:
+        print(f"\nNo finite data available for {feature1_name} vs {feature2_name}.")
+        print("Check upstream feature construction (e.g., cosine from zero-speed edges).")
+        return
     
     # Create bins
     feature1_bins = np.linspace(feature1_data.min(), feature1_data.max(), n_bins1 + 1)
@@ -156,6 +166,7 @@ def plot_3d_distribution(feature1_name, feature2_name, data_df,
     # Print statistics
     print(f"\nStatistics for {feature1_name} vs {feature2_name}:")
     print(f"Total data points: {len(data_df)}")
+    print(f"Finite paired points used: {len(feature1_data)}")
     print(f"{feature1_name} range: [{feature1_data.min():.3f}, {feature1_data.max():.3f}]")
     print(f"{feature2_name} range: [{feature2_data.min():.3f}, {feature2_data.max():.3f}]")
     print(f"Max frequency in bin: {H.max()}")

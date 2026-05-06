@@ -16,3 +16,4 @@ jupyter
 plotly
 kaleido
 imageio
+roboflow
