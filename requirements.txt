@@ -17,3 +17,9 @@ plotly
 kaleido
 imageio
 roboflow
+python-dotenv
+inference-sdk
+supervision
+numba
+pyvista
+imageio-ffmpeg

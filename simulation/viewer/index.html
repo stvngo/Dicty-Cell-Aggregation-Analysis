@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dicty 3D Lift</title>
+<style>
+  :root {
+    --bg: #06070b;
+    --panel: rgba(16, 18, 26, 0.86);
+    --line: rgba(255, 255, 255, 0.08);
+    --fg: #e9ebf2;
+    --muted: #8f96a8;
+    --accent: #ffb04a;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; overflow: hidden; }
+  #app { position: fixed; inset: 0; }
+  #app canvas { display: block; }
+  #hud { position: fixed; left: 16px; top: 14px; max-width: min(420px, calc(100vw - 32px));
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px;
+    backdrop-filter: blur(6px); pointer-events: none; }
+  #hud .title { font-weight: 600; letter-spacing: 0.01em; }
+  #hud .sub { color: var(--muted); font-size: 12px; }
+  #hud .stats { margin-top: 6px; display: grid; grid-template-columns: auto auto; gap: 2px 14px;
+    font-variant-numeric: tabular-nums; }
+  #hud .stats span:nth-child(odd) { color: var(--muted); }
+  #timeline { position: fixed; left: 16px; right: 16px; bottom: 14px; display: flex; gap: 12px;
+    align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 12px; backdrop-filter: blur(6px); }
+  #play { width: 34px; height: 30px; border-radius: 7px; border: 1px solid var(--line);
+    background: rgba(255,255,255,0.06); color: var(--fg); font-size: 14px; cursor: pointer; }
+  #play:hover { background: rgba(255,255,255,0.12); }
+  #slider { flex: 1; accent-color: var(--accent); min-width: 0; }
+  #clock { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; min-width: 150px; text-align: right; }
+  #loading { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
+  #error { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 560px;
+    background: var(--panel); border: 1px solid #ff6b6b55; border-radius: 10px; padding: 16px 18px; display: none; }
+  #error code { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 4px; }
+  .lil-gui.root { --width: 270px; top: 14px !important; right: 16px !important; max-height: calc(100vh - 90px); }
+  @media (max-width: 640px) {
+    #hud { font-size: 12px; }
+    #clock { min-width: 0; font-size: 11px; }
+    .lil-gui.root { --width: 230px; }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "lil-gui": "https://cdn.jsdelivr.net/npm/lil-gui@0.19.2/dist/lil-gui.esm.min.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+<div id="hud">
+  <div class="title">Dicty aggregation, lifted to 3D</div>
+  <div class="sub" id="subtitle">Each cell / cluster is an anisotropic Gaussian; overlapping Gaussians add.</div>
+  <div class="stats" id="stats"></div>
+</div>
+<div id="timeline">
+  <button id="play" title="Play / pause (space)">▶</button>
+  <input id="slider" type="range" min="0" max="3999" step="1" value="0" aria-label="Frame">
+  <span id="clock">frame 0</span>
+</div>
+<div id="loading">loading…</div>
+<div id="error"></div>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>

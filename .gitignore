@@ -1,3 +1,4 @@
+.env
 venv/
 __pycache__/
 *.pyc
@@ -17,6 +18,7 @@ data/jpg/
 *.ipynb_checkpoints/
 .DS_Store
 *.tif
+roboflow/images/results/
 
 # Jekyll
 _site/
@@ -24,3 +26,8 @@ _site/
 .jekyll-cache/
 .jekyll-metadata
 Gemfile.lock
+# simulation/ generated Gaussian models, web data and renders
+simulation/output/
+
+# Videos embedded in README.md are committed
+!assets/video/*.mp4
