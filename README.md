@@ -1,215 +1,223 @@
 # Dictyostelium Motility and Cell Aggregation Dynamics
-Biophysics and Computer Vision Research Project under *Dr. Wouter-Jan Rappel* and *PhD Student Yi-Chieh Lai* at **UCSD Department of Physics**.
 
-![Cosine vs Time Surface](assets/img/cosine_vs_time_surface_long.gif)
-
-## Introduction
-
-*Dictyostelium discoideum* is a social amoeba that, upon starvation, initiates a collective aggregation process to survive. Individual cells chemotax toward waves of cAMP, forming complex streaming patterns, mounds, and eventually a migrating multicellular slug. This process, regulated by **cAMP** signaling and cell adhesion, leads to the formation of a fruiting body.
-
-## Idea
-
-- Process TIFF file(s) from lab via thresholding.
-- Each frame is 15 seconds.
-- There are thousands of amoeba cells in movie, aggregating into 6 large cells by the end of the film.
-- Use **ImageJ/Fiji's** built-in cell tracking algorithms (**TrackMate**) and libraries to model the position and velocity of a subset of these cells over time, particularly:
-    - their movement *parallel/orthogonal to the Flamindo2 band*, and 
-    - their movement *relative to each other/cluster centers*.
-
-## Problems
-
-The cells contain a fluorescent marker, called **Flamindo2**, which goes dark if the intracellular cAMP concentration is high. **Cyclic AMP (cAMP)** is the chemoattractant, in other words, the chemical the cells respond to under starvation. These waves of cyclic AMP sweep over the cells in a periodic fashion. Cells relay the chemoattractant signal: if they experience a high cyclic AMP concentration around their cell body, they begin to make cAMP and will secrete it, causing them to become **dark**.
-
-The presence of this global wave/band of Flamindo2 moving from the top-right to the bottom-left of the (subset) of the Petri dish from the laboratory causes cells to move out of vision during thresholding, which poses a large challenge.
-
-The **field of view is also much smaller** than the experimental Petri dish (cells may move out of frame), so **we do not know where these waves originate from**.
-
-## Possible Solutions
-
-We have the following solutions:
-
-**1. Analyze a window/subset of the TIFF movie for a proof of concept**
-- Even if it is for a few seconds, model the movement of the cells between the bands before the cells begin to disappear.
-- Select a subset or a window of the TIFF movie;
+Biophysics and computer vision research project under *Dr. Wouter-Jan Rappel* and *PhD student Yi-Chieh Lai*, **UCSD Department of Physics**.
 
 <p align="center">
-  <img src="assets/img/bottom_left_subset.png"
-       alt="Example window chosen at frame 705 in bottom-right corner"
-       title="Example window chosen at frame 705 in bottom-right corner"
-       width="45%"/>
+  <video src="assets/video/timeconvol_image_surface_mound.mp4" poster="assets/img/lift_poster.jpg" width="100%" controls autoplay loop muted playsinline>
+    <a href="assets/video/timeconvol_image_surface_mound.mp4"><img src="assets/img/lift_poster.jpg" width="100%" alt="The aggregation movie lifted to 3D"></a>
+  </video>
 </p>
 
-**2. Persist the tracking of cells during disappearance if they have not moved too far**
-- Keep tracking the cells' location when they have disappeared, freezing the tracker's position of the cell before it disappears, and continue tracking after it reappears.
+<p align="center"><sub>
+  The full 16.7 h movie lifted into 3D (time-convolved channel, every 2nd frame at 30 fps).
+  Each cell or cluster is an anisotropic Gaussian whose height grows with its size, so streams fuse into tall aggregation mounds.
+  The 2D frame is inset top-right. See <a href="#3d-lift-simulation">3D lift</a>.
+</sub></p>
 
-# Overview (as of 02/09/2026)
+## Motivation
 
-Using the C1 movie (without waves), we have developed a preprocessing and tracking pipeline that produces improved tracking results by reducing noise and focusing on larger cell clusters.
+*Dictyostelium discoideum* is a social amoeba. When food runs out, thousands of individual cells signal to each other and aggregate:
 
-### Processing Pipeline
+1. A starving cell secretes **cyclic AMP (cAMP)**.
+2. Neighbours that sense it move up the gradient (**chemotaxis**) and relay it by secreting their own cAMP.
+3. This sets up periodic **cAMP waves** that sweep across the population.
+4. Over hours the cells organize into **streams**, then **mounds**, a migrating slug and finally a fruiting body.
 
-The full process consists of five main steps:
+**Can we describe the mechanics and forces of *Dictyostelium* under starvation from imaging alone?** Concretely:
 
-1. **Pixel Inversion**: Invert the entire stack's pixels so cells appear light against a dark background, improving contrast for detection.
+- How strongly does a cell's motion respond to the passing cAMP wave? Do cells move against the wave, toward the source, and when?
+- Do cells feel an effective "force" toward aggregation centers, and how does it depend on distance and on the size of the cluster?
+- Is the motion diffusive, directed or something in between, and how does that change as the system goes from single cells to streams to mounds?
+- How do the waves themselves behave (direction, speed, period, area), and how do they couple to the motion?
 
-2. **Spatial and Temporal Windowing**: 
-   - Select a spatial window from the stack
-   - Filter frames to focus on aggregation periods (e.g., frames 1200-4000, where distinct clusters become clearer)
+## Data
 
-**ROI Geometry** (ImageJ units):
+All current work uses one high-density movie, **"Capture 4 - Position 1"**. It has 4000 frames of 512 × 512 px at **15 s per frame** (~16.7 h) and **3.73 µm per pixel**. The cells move and aggregate toward the **top-right**, where the food/cAMP source is. A low-density movie is expected next.
+
+The cells carry **Flamindo2**, a reporter that goes **dark when intracellular cAMP is high**. Each wave therefore shows up as a **dark band sweeping from the top-right to the bottom-left**. That band is the signal we care about, but it also makes cells vanish under thresholding. Three renderings of the same movie are used:
+
+| channel | what it shows | used for |
+|---|---|---|
+| **c0** | fluorescence: bright cells on dark, **with the cAMP wave** | wave detection |
+| **c1** | dark cells on white, **no wave** (inverted before tracking) | tracking, trial_4 |
+| **highdensity_timeconvol** | c0 convolved over time: wave removed, far more stable clusters | tracking, **trial_5 (current best)** |
+
+## Approach
+
+1. **Preprocess.** Export TIFF stacks to per-frame PNG/JPG (`preprocessor/`), invert c1 so cells are bright on dark, and use the time-convolved movie to suppress the wave.
+2. **Track** in Fiji/TrackMate. A thresholding detector finds cells and clusters, and a Kalman-filter tracker links them across frames, including merge and split events as clusters fuse. Each run exports spots, edges and tracks CSVs to `results/trial_N/`.
+3. **Analyze** the tracks (`analysis/edge-features-*.ipynb`):
+   - per-edge velocities;
+   - the **cosine between each velocity and the wave direction** (−1 = moving against the wave, toward the source; this is our chemotaxis-index proxy);
+   - velocity components parallel and orthogonal to the wave;
+   - radial and tangential motion relative to the final aggregate;
+   - time-binned statistics, mean squared displacement, cluster size and nearest-neighbour distance.
+4. **Detect the cAMP waves** in c0 with a fine-tuned segmentation model ([below](#camp-wave-detection)).
+5. **Lift to 3D** for intuition about aggregation ([below](#3d-lift-simulation)).
 
 <p align="center">
-
-| Axis | Min | Max | Step (Δ) |
-|------|-----|-----|----------|
-| **X** | 154 | 397 | 1.00000 |
-| **Y** | 211 | 435 | 1.00000 |
-| **Z** | 0   | 0   | 1.00000 |
-| **T** | 0   | 2799| 1.00000 |
-
+  <img src="assets/img/cell_tracking_1.gif" alt="TrackMate cell tracking" width="45%"/>
+  <img src="assets/img/trial_3_cell_tracks.png" alt="Cell tracks" width="45%"/>
 </p>
 
-3. **Cell Detection via Thresholding**:
-   - Use thresholding detector with simplified contours to detect each cell (intensity threshold: 17604)
-   - Filter groups with radius >= 8.04 pixels to focus on larger clusters
-   - This reduces tracking issues from small clusters that frequently disappear and reappear
+Detector and tracker parameters, the original imaging problems and the trial_3 proof-of-concept findings are in **[docs/processing_pipeline.md](docs/processing_pipeline.md)**.
 
-   <p align="center">
-     <img src="assets/img/cell_tracking_1.gif" alt="Cell tracking trajectories" width="45%"/>
-     <img src="assets/img/trial_3_cell_ids.png" alt="Cell ID assignments" width="45%"/>
-   </p>
+## Results
 
-4. **Advanced Kalman Tracker (AKT)**:
-   - Hyperparameters tuned for merging/splitting events:
-     - Merging distance: 5
-      - Penalties: None
-     - Splitting distance: 5
-      - Penalties: None
-     - Initial search radius: 30 pixels (needs conversion to microns)
-     - Kalman search radius: 10 pixels (needs conversion to microns)
-       - Quality: 1
-    - Linking max distance: 30
-     - Max frame gap: 5 frames
-     - Number of merge events kept: 371 (All)
-     - Color tracks by: Track Index
-   - Improved tracking stability: contours disappear less frequently, reducing "jumpy" tracks (straight lines jumping across frames)
-   
-   ![Cell tracks](assets/img/trial_3_cell_tracks.png "Cell tracking trajectories")
+Current results come from **trial_5** (time-convolved movie, full 4000 frames), analysed in `analysis/edge-features-3.ipynb`. trial_4 (c1) is in `edge-features-2.ipynb`.
 
-5. **Track Analysis**: Generate tracking data including spots, tracks, edges, and branches (cell hierarchy) CSV files for further analysis.
+**Alignment with the wave over time.**
 
-### Current Issues and Limitations
+- The mean cosine stays near 0 for the first ~800 frames.
+- It swings toward −0.4 between frames ~900 and ~1600. Cells are on average moving against the wave, toward the top-right source, which is when directed streaming becomes visible in the movie.
+- It relaxes back to ~0 once the aggregates have formed.
 
-1. **Inconsistent Splitting/Merging Events**: 
-   - When two distinct cells merge, a new cell ID is assigned
-   - These merged cells can split immediately after (due to contouring/threshold detection), creating new contours and IDs
-   - This back-and-forth process is likely unavoidable given the ambiguous nature of the clusters
+<p align="center"><img src="assets/img/trial_5/mean_cosine_over_time.png" width="85%" alt="Mean cosine over time"/></p>
 
-2. **Frame Gap Parameter Trade-offs**:
-   - The max frame gap parameter requires careful tuning
-   - Too low: causes disappearing/jumpy tracks and redundant cell IDs
-   - Too high: risks incorrect linking of different nearby cells
-   - Cells frequently disappear and reappear (visible in TrackScheme), requiring frame gap limits to maintain continuity
-   
-   ![Track scheme](assets/img/trial_3_trackscheme.png "TrackScheme visualization showing cell ID evolution")
-   ![Plot of N spots vs T.png](assets/viz/trial_3/Plot_of_N_spots_vs_T.png "Spots vs T")
+**Distribution of per-edge cosine over time.**
 
-3. **Temporal Tracking Patterns**:
-   - Early-middle frames: constant splitting/merging, unclear cluster identities (long horizontal curve in TrackScheme shows many cell IDs being created)
-   - Later frames: tracking becomes more stable as clusters fully aggregate (curve dips, with long continuous tracks like the orange line representing the fully aggregated center cell)
-   - This temporal pattern serves as a sanity check for the tracking quality
-
-4. **Limited Split/Merge Detection**:
-   - Analysis of `results/trial_3/..branches.csv` shows almost no successors or predecessors detected for most cells
-   - Suggests that split/merge events *may not* be properly captured in the current implementation
-
-### Results
-
-Tracking results show promising signs of cell response to waves (e.g., a long purple track moving toward upper right), though further analysis is needed to confirm wave-velocity relationships.
+- Edges pile up at cosine ±1, so most steps are nearly parallel or anti-parallel to the wave rather than random.
+- The −1 side shows **two peaks**: one in the first ~300 frames and one around frames ~800–1100.
+- The second matches the visible onset of chemotaxis. The first is unexplained and is under investigation (see [problems](#current-problems-and-limitations)).
 
 <p align="center">
-  <img src="assets/img/trial_3_zoomed.png" alt="Zoomed view of tracked cells" width="70%"/>
+  <img src="assets/img/trial_5/cosine_time_hist2d.png" width="49%" alt="Time x cosine 2D histogram"/>
+  <img src="assets/img/trial_5/cosine_time_hist3d.png" width="49%" alt="Cosine x edge time x count, 3D histogram"/>
 </p>
 
-**Output Data**: Tracking results (spots, tracks, edges, branches CSV files) are available in [`results/trial_3/`](results/trial_3).
+**Motion statistics and aggregation.**
 
-**Video**: [Tracking visualization (frames 1200-4000 at 60 fps)](https://drive.google.com/file/d/163sUff1nipgEXZRfvcQ-P1H_oR9RZeLi/view?usp=sharing)
+- **MSD:** the ensemble MSD grows as ~t<sup>1.3</sup>, between diffusion (α = 1) and directed motion (α = 2).
+- **Cluster size:** the mean cluster area is flat for ~800 frames, then grows ~20× by frame ~2000.
+- **Spacing:** the nearest-neighbour distance between clusters starts climbing at frame ~1100. That is exactly when wave detection begins to fail, because the growing gaps between clusters look like dark wave bands.
 
-### Next Steps
+<p align="center"><img src="assets/img/trial_5/msd_loglog.png" width="85%" alt="MSD log-log"/></p>
+<p align="center">
+  <img src="assets/img/trial_5/cluster_size_vs_time.png" width="49%" alt="Mean cluster size vs time"/>
+  <img src="assets/img/trial_5/nn_distance_vs_time.png" width="49%" alt="Nearest-neighbour distance vs time (frames 0-1500)"/>
+</p>
 
-- Develop strategy for extracting cluster center positions from tracking data
-- Implement wave velocity calculation methodology
-- Improve split/merge event detection and tracking consistency
+An earlier view of the same question (trial_3, interactive Plotly surface of cosine × time × count):
 
-> Further analysis can be found at [`analysis/edge-features.ipynb`](analysis/edge-features.ipynb)
+<p align="center"><img src="assets/img/cosine_vs_time_surface_long.gif" width="70%" alt="Cosine vs time surface (trial_3)"/></p>
 
-## Particle/Cell Tracking Algorithms
+## cAMP wave detection
 
-A variety of tracking algorithms are available under ImageJ/Fiji's open-source TrackMate library. We are most interested in those that can detect and handle **merging and splitting events**, since our Dicty cells aggregate over time in a hierarchal fashion. The algorithms used to capture smaller cells merging to form larger cells can be found [here](docs/trackers)
+**Motivation.** The wave is both the obstacle and the signal:
 
-Many of these algorithms include hyperparameters (i.e., radius, persistence, thresholds, pixels), that must be tuned to accurately capture frame-by-frame movement of cells.
+- It is why cells disappear when c0 is thresholded.
+- It is also the stimulus the cells respond to. Relating motion to the signal needs the wave's position, direction, speed and timing in every frame.
 
-Other available methods have been used, e.g., using contour detection via Python (cv2); however, there has been no success so far. There remain algorithms yet to have been attempted, such as YOLO by Ultralytics, which may provide tracking and plotting trajectories, but may need additional data preprocessing (format conversion, 16-bit support, performance optimization via 8-bit PNG frames) as well as post-training/fine-tuning with currently inaccessible data.
+Classical thresholding cannot separate a dark wave band from dark background, so we trained a detector.
 
-## Reproducibility
+**Method.**
 
-> Note: although tracks can be fully reproduced with the above hyperparameters, the track colors and cell IDs will be different. The extracted data (e.g., position, time) should be the same.
+- **Labels:** about 100–200 frames of c0, annotated by hand with polygon masks (SAM3-assisted in Roboflow). These include null frames with no wave.
+- **Training:** RF-DETR / YOLO instance-segmentation models fine-tuned on Roboflow, reaching validation accuracy in the mid-to-high 90s.
+- **Inference:** run on all 4000 frames with `roboflow/images/workflow.py`.
+
+**Results.**
+
+- Waves appear from about **frame 260**, with 1–4 visible at once.
+- Their direction rotates over the movie, from a top-down slant to mostly right-to-left, and their speed changes.
+- Detection is reliable up to about **frame 1100–1250**. After that, the widening gaps between clusters are indistinguishable from waves.
+- Even before that, some frames drop a wave or part of one. This is why a per-frame wave velocity/area series (`roboflow/images/wave_velocity_plot.py`) is not yet trustworthy.
+
+<p align="center">
+  <video src="assets/video/roboflow_waves_2026-05-16_60fps.mp4" poster="assets/img/roboflow_poster.jpg" width="60%" controls loop muted playsinline>
+    <a href="assets/video/roboflow_waves_2026-05-16_60fps.mp4"><img src="assets/img/roboflow_poster.jpg" width="60%" alt="Roboflow wave detections"></a>
+  </video>
+</p>
+<p align="center"><sub>Roboflow inference on c0, frames 0–1422 (run of 2026-05-16) at 60 fps, with frame and time stamped bottom-left.</sub></p>
+
+**Further applications.**
+
+- **Robust training past frame ~1250.** Smooth each frame spatially, define a per-pixel **phase** of the oscillation (e.g. Hilbert transform of each pixel's intensity over time) and train on those. Also annotate late frames as wave-free negatives.
+- **Wave kinematics.** Measure direction, speed, period and area over time once detections are consistent between frames.
+- **Conditioning chemotaxis on the wave.** Estimate the probability of high chemotactic alignment given wave presence or phase, to separate wave-driven motion from drift toward aggregates.
+- **Tracking support.** Wave masks could gate or bridge tracks in c0 while cells are dark.
+- **Other movies.** Generalize to the upcoming low-density data.
+
+## Current problems and limitations
+
+1. **Wave detection breaks down after frame ~1100–1250.**
+   - Inter-cluster gaps look like waves, and even earlier frames occasionally drop a wave or part of one.
+   - Plan: phase-based preprocessing (spatial smoothing, Hilbert transform), late-frame negative annotations, then retraining.
+2. **The early double −1 cosine peak.**
+   - The ~800–1100 peak is expected. The peak in the first ~300 frames is not, since no directed motion is visible then.
+   - Next checks:
+     - compute velocity over Δt = 3–5 frames instead of per edge;
+     - bin time more coarsely;
+     - query the high-alignment edges/spots near t = 0;
+     - check whether the peak is a binning or resolution artifact.
+   - Note: the *smooth-surface* variant of this plot (`plot_3d_distribution` in `analysis/utils.py`) transposed its counts, swapping cosine and time, until 2026-10-15. The bar chart shown above and the 2D histograms were not affected.
+3. **Tracking identity.**
+   - Clusters that merge get new IDs and can split again right after. Per-edge velocities are therefore noisy, and per-track averages are more stable.
+   - Acceleration is deliberately not analysed, because differentiating noisy velocities amplifies the noise.
+4. **Scope of the data.**
+   - There is only one high-density movie so far.
+   - The field of view is much smaller than the dish, so cells leave the frame and the wave origin is never visible.
+   - trial_4 positions are in µm and trial_5 in pixels, and trial_5 is stored time-reversed; the notebooks handle both.
+
+## Repository layout
+
+| path | contents |
+|---|---|
+| `analysis/` | notebooks: `edge-features-3.ipynb` (trial_5, current), `edge-features-2.ipynb` (trial_4), `edge-features.ipynb` (trial_3); `utils.py` plotting helpers |
+| `results/trial_N/` | TrackMate spots/edges/tracks CSVs (trial_5's are too large for GitHub and stay local) |
+| `preprocessor/` | TIFF → PNG/JPG, inversion, windowing, frames → MP4/TIFF |
+| `roboflow/` | wave inference (`images/workflow.py`), tracking and geometry of detections, RF-DETR training notebook |
+| `simulation/` | 3D lift of the movie: Gaussian decomposition, web viewer, MP4 renderer |
+| `docs/` | processing pipeline, TrackMate detector/tracker notes, experiment logs, meeting notes |
+| `assets/` | figures and videos used here |
+| `readme_old.md` | the previous README (trial_3 era) |
 
 ## Setup
 
-### **1. Create and activate a virtual environment**
-
-From the repository root:
-
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # macOS / Linux
-# On Windows (PowerShell):
-# .\\venv\\Scripts\\Activate.ps1
-```
-
-### **2. Install Python dependencies**
-
-If a `requirements.txt` file is present:
-
-```bash
-pip install --upgrade pip
+source venv/bin/activate
 pip install -r requirements.txt
+jupyter notebook          # open analysis/edge-features-3.ipynb; notebooks chdir to the repo root
 ```
 
-If not, the core analysis stack can be installed with:
+Frame exports (gitignored, rebuilt from the TIFFs in `data/raw/`):
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn jupyter
+python preprocessor/tiff_to_png_jpg.py --raw-dir data/raw --output-dir data       # data/png/<cN>/, data/jpg/<cN>/
+python preprocessor/invert.py --input-dir data/png/c1 --output-dir data/jpg/c1_inverted
+python preprocessor/jpgs_to_mp4.py --input-dir <frames> --output <out.mp4> --fps 60 --codec avc1 --label
 ```
 
-### **3. Launch Jupyter for analysis**
-
-From the repo root (with the virtual environment activated):
+The Roboflow scripts read credentials from a repo-root `.env`. Copy `.env.template` and fill in `ROBOFLOW_API_KEY`.
 
 ```bash
-jupyter notebook
+python roboflow/images/workflow.py            # inference on data/jpg/waves -> roboflow/images/results/<date>/
+python roboflow/images/tracker.py --offline --results-dir roboflow/images/results/2026-05-16_232640 \
+  --waves-dir data/jpg/waves --output tracked.mp4
 ```
 
-Then open `analysis/edge-features.ipynb` to reproduce the tracking and edge-feature analysis.
+## 3D lift (simulation)
 
-## Run
+`simulation/` turns each frame into **one anisotropic Gaussian per cell or cluster**:
 
-For image preprocessing utilities, use the following commands:
+- Gaussians are fitted from the image itself (watershed regions merged across shallow saddles, then intensity-weighted moments) or taken from the TrackMate spots.
+- Each one is lifted into a third dimension: as a **height field**, a **metaball iso-surface** (nearby cells fuse into blobs) or **3D Gaussian splats**.
+- The height model is selectable: *mound* (height ∝ cluster radius), *intensity* or *mass*.
 
-`preprocessor/window.py `
+Details are in [`simulation/README.md`](simulation/README.md).
+
 ```bash
-python -m preprocessor.window \
-  --input path/to/movie.tif \
-  --output path/to/window.tif \
-  --start-frame 10 --end-frame 20 \
-  --start-row 100 --end-row 300 \
-  --start-col 150 --end-col 350
+python -m simulation.build                 # ~13 min: Gaussian models for c1 (inverted) and timeconvol, all 4000 frames
+python -m http.server 8000                 # from the repo root, then open http://localhost:8000/simulation/viewer/
+python -m simulation.render --source timeconvol --mode surface        # 1080p MP4 like the one at the top
+python -m simulation.render --source c1_inverted --mode metaballs --orbit 50
 ```
 
-or force full load into RAM:
-```bash
-python -m preprocessor.window --input in.tif --output out.tif --no-memmap
-```
+The viewer streams the data in chunks and has:
 
-> Note that preprocessing subsets and ROIs via Python scripting will remove image settings, such as pixel width, pixel height, voxel depth, and time interval, setting all to 1 by default in TrackMate.
+- a time slider with playback (Space, ←/→);
+- live switching of model, render mode, height model, colour (height, TrackMate track or image), z exaggeration and σ;
+- PNG snapshots.
+
+Generated data and renders go to `simulation/output/` (gitignored).
