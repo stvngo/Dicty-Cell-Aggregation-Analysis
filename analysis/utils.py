@@ -128,10 +128,13 @@ def plot_3d_distribution(feature1_name, feature2_name, data_df,
         ax = fig.add_subplot(111, projection='3d')
         
         # Plot surface
+        # H is indexed [feature1_bin, feature2_bin], same as the 'ij' meshgrid,
+        # so it must NOT be transposed (a transpose silently swaps the axes
+        # when n_bins1 == n_bins2, and errors otherwise).
         surf = ax.plot_surface(
-            F1_mesh, 
-            F2_mesh, 
-            H_smooth.T,  # Transpose for correct orientation
+            F1_mesh,
+            F2_mesh,
+            H_smooth,
             cmap='viridis',
             alpha=0.8,
             linewidth=0,
@@ -140,9 +143,9 @@ def plot_3d_distribution(feature1_name, feature2_name, data_df,
         
         # Add contour lines on the base
         contour = ax.contour(
-            F1_mesh, 
-            F2_mesh, 
-            H_smooth.T,
+            F1_mesh,
+            F2_mesh,
+            H_smooth,
             zdir='z',
             offset=0,
             cmap='viridis',
