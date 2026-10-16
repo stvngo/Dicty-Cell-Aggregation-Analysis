@@ -1,12 +1,12 @@
+
+https://github.com/user-attachments/assets/2b6cc54a-2153-4078-a4a9-63d5d07369d7
 # Dictyostelium Motility and Cell Aggregation Dynamics
 
 Biophysics and computer vision research project under *Dr. Wouter-Jan Rappel* and *PhD student Yi-Chieh Lai*, **UCSD Department of Physics**.
 
-<p align="center">
-  <video src="assets/video/timeconvol_image_surface_mound.mp4" poster="assets/img/lift_poster.jpg" width="100%" controls autoplay loop muted playsinline>
-    <a href="assets/video/timeconvol_image_surface_mound.mp4"><img src="assets/img/lift_poster.jpg" width="100%" alt="The aggregation movie lifted to 3D"></a>
-  </video>
-</p>
+
+https://github.com/user-attachments/assets/11973e49-79f4-4c99-9894-a98e8fbb09cd
+
 
 <p align="center"><sub>
   The full 16.7 h movie lifted into 3D (time-convolved channel, every 2nd frame at 30 fps).
@@ -123,12 +123,7 @@ Classical thresholding cannot separate a dark wave band from dark background, so
 - Detection is reliable up to about **frame 1100–1250**. After that, the widening gaps between clusters are indistinguishable from waves.
 - Even before that, some frames drop a wave or part of one. This is why a per-frame wave velocity/area series (`roboflow/images/wave_velocity_plot.py`) is not yet trustworthy.
 
-<p align="center">
-  <video src="assets/video/roboflow_waves_2026-05-16_60fps.mp4" poster="assets/img/roboflow_poster.jpg" width="60%" controls loop muted playsinline>
-    <a href="assets/video/roboflow_waves_2026-05-16_60fps.mp4"><img src="assets/img/roboflow_poster.jpg" width="60%" alt="Roboflow wave detections"></a>
-  </video>
-</p>
-<p align="center"><sub>Roboflow inference on c0, frames 0–1422 (run of 2026-05-16) at 60 fps, with frame and time stamped bottom-left.</sub></p>
+https://github.com/user-attachments/assets/aae476ae-9ce9-4bcf-9b9b-2ea19c6d003c
 
 **Further applications.**
 
