@@ -121,7 +121,9 @@ Classical thresholding cannot separate a dark wave band from dark background, so
 - Detection is reliable up to about **frame 1100–1250**. After that, the widening gaps between clusters are indistinguishable from waves.
 - Even before that, some frames drop a wave or part of one. This is why a per-frame wave velocity/area series (`roboflow/images/wave_velocity_plot.py`) is not yet trustworthy.
 
-https://github.com/user-attachments/assets/aae476ae-9ce9-4bcf-9b9b-2ea19c6d003c
+<div align="center">
+https://github.com/user-attachments/assets/4e83ebea-2074-4ec6-8304-3aab632843b5
+</div>
 
 **Further applications.**
 
